@@ -22,7 +22,8 @@ local CONFIG = {
         PLATFORM_SIZE = Vector3.new(1000, 1, 1000),
         HEIGHT_CHANGE = 1,
         INITIAL_OFFSET = -3
-    }
+    },
+     KEYBIND = Enum.KeyCode.L
 }
 
 -- Services
@@ -72,9 +73,8 @@ local SAHUB = {
     Connections = {},
     BangGui = nil,
     BangActive = false,
-     TargetPlayer = nil,
-     TargetName = nil,
-    
+    TargetPlayer = nil,
+    TargetName = nil,
 }
 
 function SAHUB:Init()
@@ -87,6 +87,7 @@ function SAHUB:Init()
     self:CreateIntro()
     self:CreateCommandsGui()
     self:SetupChatCommands()
+    self:SetupKeybind()
 end
 
 function SAHUB:CreateIntro()
@@ -110,8 +111,22 @@ function SAHUB:CreateIntro()
         Parent = intro
     })
     
+     local keybindLabel = Utility.CreateInstance("TextLabel", {
+        Name = "KeybindLabel",
+        Size = UDim2.new(0, 300, 0, 30),
+        Position = UDim2.new(0.5, -150, 0.5, 50),
+        BackgroundTransparency = 1,
+        TextColor3 = CONFIG.COLORS.TEXT,
+        TextSize = 14,
+        Font = Enum.Font.Gotham,
+        Text = "(Press L to activate cmds)",
+         TextTransparency = 1,
+        Parent = intro
+    })
+    
     -- Animate intro
     Utility.Tween(logo, {TextTransparency = 0}, 1)
+    Utility.Tween(keybindLabel, {TextTransparency = 0}, 1)
     task.wait(2)
     Utility.Tween(intro, {BackgroundTransparency = 1}, 0.5).Completed:Wait()
     intro:Destroy()
@@ -512,6 +527,7 @@ end,
 	["!ssj"] = function()
        loadstring(game:HttpGet("https://raw.githubusercontent.com/0Ben1/fe/main/obf_11l7Y131YqJjZ31QmV5L8pI23V02b3191sEg26E75472Wl78Vi8870jRv5txZyL1.lua.txt"))()
 	end,
+	
     ["!ak"] = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/LOLkeeptrying/AKADMIN/refs/heads/main/Congratslol"))()
 		end,
@@ -534,11 +550,8 @@ end,
     ["!unfloat"] = function()
         SAHUB:DisableFloat()
     end,
-     ["!bang"] = function()
-          if not SAHUB.BangGui then
-            SAHUB:CreateBangGui()
-          end
-          SAHUB.BangGui.Visible = not SAHUB.BangGui.Visible
+     ["!Jerk"] = function()
+         loadstring(game:HttpGet("https://pastefy.app/YZoglOyJ/raw"))() 
      end,
 	 ["!clearchat"] = function()
 		local TextChatService = Services.TextChatService
@@ -770,5 +783,13 @@ function SAHUB:SetupChatCommands()
     end)
 end
 
+function SAHUB:SetupKeybind()
+    Services.UserInputService.InputBegan:Connect(function(input, processed)
+        if processed then return end
+        if input.KeyCode == CONFIG.KEYBIND then
+            self.CommandsGui.Visible = not self.CommandsGui.Visible
+        end
+    end)
+end
 -- Initialize
 SAHUB:Init()
